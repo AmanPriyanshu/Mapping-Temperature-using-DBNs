@@ -94,10 +94,19 @@ class RBM:
 				v0 = dataset[batch_start_index:batch_start_index+self.batch_size]
 				ph0, _ = self.sample_h(v0)
 
-				for k in range(self.k):
-					_, hk = self.sample_h(vk)
-					_, vk = self.sample_v(hk)
-				phk, _ = self.sample_h(vk)
+				vks, phks = [], []
+				for _ in range(self.k):
+					for k in range(3):
+						_, hk = self.sample_h(vk)
+						_, vk = self.sample_v(hk)
+					phk, _ = self.sample_h(vk)
+					vks.append(vk)
+					phks.append(phk)
+				phks = torch.stack(phks)
+				vks = torch.stack(vks)
+				vk = torch.mean(vks, dim=0)
+				phk = torch.mean(phks, dim=0)
+
 				self.update(v0, vk, ph0, phk, epoch+1)
 				train_loss += torch.mean(torch.abs(v0-vk))
 				counter += 1

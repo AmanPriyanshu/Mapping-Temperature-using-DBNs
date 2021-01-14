@@ -54,7 +54,7 @@ class DBN:
 				vn = self.layers[index-1]
 			hn = self.layers[index]
 
-			rbm = RBM(vn, hn, epochs=100, mode='bernoulli', lr=0.0005, k=10, batch_size=128, gpu=True, optimizer='adam', early_stopping_patience=10)
+			rbm = RBM(vn, hn, epochs=100, mode='bernoulli', lr=0.0005, k=self.k, batch_size=128, gpu=True, optimizer='adam', early_stopping_patience=10)
 			x_dash = self.generate_input_for_layer(index, x)
 			rbm.train(x_dash)
 			self.layer_parameters[index]['W'] = rbm.W.cpu()
